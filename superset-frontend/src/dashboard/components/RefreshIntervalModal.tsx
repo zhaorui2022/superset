@@ -26,18 +26,17 @@ import ModalTrigger, { ModalTriggerRef } from 'src/components/ModalTrigger';
 import { FormLabel } from 'src/components/Form';
 import { propertyComparator } from 'src/components/Select/utils';
 
-export const options = [
-  [0, t("Don't refresh")],
-  [10, t('10 seconds')],
-  [30, t('30 seconds')],
-  [60, t('1 minute')],
-  [300, t('5 minutes')],
-  [1800, t('30 minutes')],
-  [3600, t('1 hour')],
-  [21600, t('6 hours')],
-  [43200, t('12 hours')],
-  [86400, t('24 hours')],
-].map(o => ({ value: o[0] as number, label: o[1] }));
+const container = document.getElementById('app');
+const bootstrapJson = container?.getAttribute('data-bootstrap') ?? '{}';
+const bootstrap = JSON.parse(bootstrapJson);
+const config = bootstrap?.common?.conf;
+
+export const options = config?.DASHBOARD_AUTO_REFRESH_INTERVALS.map(
+  (o: any[]) => ({
+    value: o[0] as number,
+    label: o[1],
+  }),
+);
 
 const StyledModalTrigger = styled(ModalTrigger)`
   .ant-modal-body {
@@ -109,7 +108,10 @@ class RefreshIntervalModal extends React.PureComponent<
     const { refreshFrequency = 0 } = this.state;
     const showRefreshWarning =
       !!refreshFrequency && !!refreshWarning && refreshFrequency < refreshLimit;
-
+    console.log('options:');
+    // console.log(bootstrapJson);
+    console.log(document.getElementById('app').getAttribute('data-bootstrap'));
+    console.log(options);
     return (
       <StyledModalTrigger
         ref={this.modalRef}

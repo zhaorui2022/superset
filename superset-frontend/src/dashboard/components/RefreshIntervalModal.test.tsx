@@ -28,6 +28,7 @@ import HeaderActionsDropdown from 'src/dashboard/components/Header/HeaderActions
 import Alert from 'src/components/Alert';
 import { supersetTheme, ThemeProvider } from '@superset-ui/core';
 
+
 describe('RefreshIntervalModal - Enzyme', () => {
   const getMountWrapper = (props: any) =>
     mount(<RefreshIntervalModal {...props} />, {
@@ -136,6 +137,19 @@ const defaultRefreshIntervalModalProps = {
 };
 
 describe('RefreshIntervalModal - RTL', () => {
+  beforeAll(() => {
+    const bootstrapData = {
+      conf: {
+        DASHBOARD_AUTO_REFRESH_INTERVALS: [
+          [0, "Don\'t refresh"],
+          [10, '10 seconds'],
+        ],
+      },
+    };
+    const bootstrapDataStr = JSON.stringify(bootstrapData);
+    document.body.innerHTML = `<div id="app" data-bootstrap='${bootstrapDataStr}'></div>`;
+  });
+
   it('is valid', () => {
     expect(
       React.isValidElement(
